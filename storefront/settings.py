@@ -120,35 +120,25 @@ WSGI_APPLICATION = 'storefront.wsgi.application'
 # SQLite by default. Set DB_ENGINE=mysql (and the DB_* variables) to use MySQL;
 # this needs the `mysqlclient` package.
 
-# if os.environ.get('DB_ENGINE', 'sqlite').lower() == 'mysql':
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.mysql',
-#             'NAME': os.environ.get('DB_NAME', 'storefront'),
-#             'USER': os.environ.get('DB_USER', 'root'),
-#             'PASSWORD': os.environ.get('DB_PASSWORD', ''),
-#             'HOST': os.environ.get('DB_HOST', 'localhost'),
-#             'PORT': os.environ.get('DB_PORT', '3306'),
-#         }
-#     }
-# else:
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.sqlite3',
-#             'NAME': BASE_DIR / 'db.sqlite3',
-#         }
-#     }
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'storeffront',
-        'USER': 'odoo',
-        'PASSWORD': 'odoopwd',
-        'HOST': 'localhost',
-        'PORT': '5432',
+if os.environ.get('DB_ENGINE', 'sqlite').lower() == 'mysql':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.environ.get('DB_NAME', 'storefront'),
+            'USER': os.environ.get('DB_USER', 'root'),
+            'PASSWORD': os.environ.get('DB_PASSWORD', ''),
+            'HOST': os.environ.get('DB_HOST', 'localhost'),
+            'PORT': os.environ.get('DB_PORT', '3306'),
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+
 
 # --- Auth -------------------------------------------------------------------
 
