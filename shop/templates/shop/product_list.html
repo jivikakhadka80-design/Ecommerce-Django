@@ -1,0 +1,55 @@
+{% extends 'shop/base.html' %}
+{% block title %}{% if current_collection %}{{ current_collection.title }}{% else %}All products{% endif %}{% endblock %}
+{% block content %}
+<div class="breadcrumbs"><a href="{% url 'shop:home' %}">Home</a> / <span>{% if current_collection %}{{ current_collection.title }}{% else %}All products{% endif %}</span></div>
+
+<div class="layout-sidebar">
+  <aside class="sidebar card">
+    <h4>Categories</h4>
+    <ul class="plain">
+      <li><a href="{% url 'shop:products' %}{% if query %}?q={{ query|urlencode }}{% endif %}" class="{% if not current_collection %}active{% endif %}">All products</a></li>
+      {% for c in collections %}
+      <li><a href="{% url 'shop:products' %}?collection={{ c.id }}{% if query %}&amp;q={{ query|urlencode }}{% endif %}" class="{% if current_collection and current_collection.id == c.id %}active{% endif %}">{{ c.title }} <small>({{ c.products_count }})</small></a></li>
+      {% endfor %}
+    </ul>
+  </aside>
+
+  <section>
+    <div class="list-head">
+      <h1>{% if query %}Results for “{{ query }}”{% elif current_collection %}{{ current_collection.title }}{% else %}All products{% endif %}
+        <small class="muted">({{ page.paginator.count }})</small></h1>
+      <form method="get" class="sort-form">
+        {% if query %}<input type="hidden" name="q" value="{{ query }}">{% endif %}
+        {% if current_collection %}<input type="hidden" name="collection" value="{{ current_collection.id }}">{% endif %}
+        <label for="sort">Sort by</label>
+        <select name="sort" id="sort" onchange="this.form.submit()">
+          <option value="" {% if not sort %}selected{% endif %}>Name (A–Z)</option>
+          <option value="price_asc" {% if sort == 'price_asc' %}selected{% endif %}>Price: low to high</option>
+          <option value="price_desc" {% if sort == 'price_desc' %}selected{% endif %}>Price: high to low</option>
+          <option value="newest" {% if sort == 'newest' %}selected{% endif %}>Newest</option>
+        </select>
+        <noscript><button type="submit" class="btn">Apply</button></noscript>
+      </form>
+    </div>
+
+    {% if page.object_list %}
+      <div class="product-grid grid-3">
+        {% for product in page.object_list %}{% include 'shop/_product_card.html' %}{% endfor %}
+      </div>
+
+      {% if page.has_other_pages %}
+      <nav class="pagination" aria-label="Pagination">
+        {% if page.has_previous %}<a href="?{% if querystring %}{{ querystring }}&amp;{% endif %}page={{ page.previous_page_number }}">← Prev</a>{% endif %}
+        <span>Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+        {% if page.has_next %}<a href="?{% if querystring %}{{ querystring }}&amp;{% endif %}page={{ page.next_page_number }}">Next →</a>{% endif %}
+      </nav>
+      {% endif %}
+    {% else %}
+      <div class="empty">
+        <h3>No products found</h3>
+        <p>Try a different search or <a href="{% url 'shop:products' %}">browse everything</a>.</p>
+      </div>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

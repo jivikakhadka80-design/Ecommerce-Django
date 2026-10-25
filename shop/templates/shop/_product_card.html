@@ -1,0 +1,23 @@
+{% load shop_extras %}
+<article class="card product-card">
+  <a href="{% url 'shop:product_detail' product.pk %}" class="thumb {{ product.pk|ph_class }}" aria-hidden="true" tabindex="-1">
+    <span>{{ product.title|first|upper }}</span>
+    {% if product.inventory < 1 %}<em class="tag tag-out">Sold out</em>
+    {% elif product.inventory < 10 %}<em class="tag tag-low">Only {{ product.inventory }} left</em>{% endif %}
+  </a>
+  <div class="card-body">
+    <div class="muted small">{{ product.collection.title }}</div>
+    <h3><a href="{% url 'shop:product_detail' product.pk %}">{{ product.title }}</a></h3>
+    <div class="price">${{ product.unit_price|floatformat:2 }}</div>
+    {% if product.inventory > 0 %}
+    <form method="post" action="{% url 'shop:add_to_cart' %}">
+      {% csrf_token %}
+      <input type="hidden" name="product_id" value="{{ product.pk }}">
+      <input type="hidden" name="quantity" value="1">
+      <button type="submit" class="btn btn-block">Add to cart</button>
+    </form>
+    {% else %}
+    <button class="btn btn-block" disabled>Out of stock</button>
+    {% endif %}
+  </div>
+</article>

@@ -1,0 +1,28 @@
+{% extends 'shop/base.html' %}
+{% block title %}Checkout{% endblock %}
+{% block content %}
+<h1>Checkout</h1>
+<div class="layout-cart">
+  <div class="card">
+    <h3>Review your items</h3>
+    <table class="table">
+      <thead><tr><th>Product</th><th>Qty</th><th class="num">Total</th></tr></thead>
+      <tbody>
+      {% for item in lines %}
+        <tr><td>{{ item.product.title }}</td><td>{{ item.quantity }}</td><td class="num">${{ item.line_total|floatformat:2 }}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    <p class="muted small">Ordering as <strong>{{ user.get_username }}</strong>. Payment is marked <em>Pending</em> until the store confirms it.</p>
+  </div>
+  <aside class="card summary">
+    <h3>Order total</h3>
+    <div class="summary-row total"><span>Total</span><span>${{ total|floatformat:2 }}</span></div>
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-block btn-lg">Place order</button>
+    </form>
+    <a href="{% url 'shop:cart' %}" class="btn btn-block btn-outline">Back to cart</a>
+  </aside>
+</div>
+{% endblock %}

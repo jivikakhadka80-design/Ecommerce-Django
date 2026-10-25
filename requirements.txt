@@ -1,0 +1,10 @@
+Django>=5.0,<5.2
+djangorestframework>=3.15
+drf-nested-routers>=0.94
+django-filter>=24.1
+djoser>=2.2.3
+djangorestframework-simplejwt>=5.3
+# Development helper (optional - the project runs without it)
+django-debug-toolbar>=4.3
+# Only needed if you set DB_ENGINE=mysql
+# mysqlclient>=2.2

@@ -1,0 +1,81 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Storefront{% endblock %} · Storefront</title>
+  <link rel="stylesheet" href="{% static 'shop/css/style.css' %}">
+</head>
+<body>
+  <div class="topbar">Free shipping on orders over $50 &nbsp;·&nbsp; Easy 30-day returns</div>
+
+  <header class="site-header">
+    <div class="container header-row">
+      <a href="{% url 'shop:home' %}" class="logo">Store<span>front</span></a>
+
+      <form class="search" action="{% url 'shop:products' %}" method="get" role="search">
+        <input type="search" name="q" placeholder="Search products…" value="{{ query|default:'' }}" aria-label="Search products">
+        <button type="submit">Search</button>
+      </form>
+
+      <nav class="header-actions">
+        {% if user.is_authenticated %}
+          <a href="{% url 'shop:orders' %}">My orders</a>
+          <form method="post" action="{% url 'shop:logout' %}" class="inline">
+            {% csrf_token %}
+            <button type="submit" class="linklike">Log out ({{ user.get_username }})</button>
+          </form>
+        {% else %}
+          <a href="{% url 'shop:login' %}">Log in</a>
+          <a href="{% url 'shop:register' %}">Sign up</a>
+        {% endif %}
+        <a href="{% url 'shop:cart' %}" class="cart-link">
+          🛒 Cart{% if cart_count %}<span class="badge">{{ cart_count }}</span>{% endif %}
+        </a>
+      </nav>
+    </div>
+    <div class="subnav">
+      <div class="container">
+        <a href="{% url 'shop:products' %}">All products</a>
+        {% for c in nav_collections %}
+          <a href="{% url 'shop:products' %}?collection={{ c.id }}">{{ c.title }}</a>
+        {% endfor %}
+      </div>
+    </div>
+  </header>
+
+  {% if messages %}
+  <div class="container messages">
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <div class="logo">Store<span>front</span></div>
+        <p>Quality products, simple checkout.</p>
+      </div>
+      <div>
+        <h4>Shop</h4>
+        <a href="{% url 'shop:products' %}">All products</a>
+        <a href="{% url 'shop:products' %}?sort=newest">New arrivals</a>
+        <a href="{% url 'shop:cart' %}">Your cart</a>
+      </div>
+      <div>
+        <h4>Account</h4>
+        <a href="{% url 'shop:orders' %}">Order history</a>
+        <a href="{% url 'shop:login' %}">Log in</a>
+        <a href="{% url 'shop:register' %}">Create account</a>
+      </div>
+    </div>
+    <div class="container copyright">© {% now "Y" %} Storefront. All rights reserved.</div>
+  </footer>
+</body>
+</html>

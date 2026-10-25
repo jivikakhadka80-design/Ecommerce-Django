@@ -1,0 +1,14 @@
+<table class="table">
+  <thead><tr><th>Product</th><th>Price</th><th>Qty</th><th class="num">Total</th></tr></thead>
+  <tbody>
+  {% for item in order.line_items %}
+    <tr>
+      <td><a href="{% url 'shop:product_detail' item.product.pk %}">{{ item.product.title }}</a></td>
+      <td>${{ item.unit_price|floatformat:2 }}</td>
+      <td>{{ item.quantity }}</td>
+      <td class="num">${{ item.line_total|floatformat:2 }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+  <tfoot><tr><td colspan="3" class="num"><strong>Total</strong></td><td class="num"><strong>${{ order.total|floatformat:2 }}</strong></td></tr></tfoot>
+</table>

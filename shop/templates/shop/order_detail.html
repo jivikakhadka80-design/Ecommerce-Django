@@ -1,0 +1,13 @@
+{% extends 'shop/base.html' %}
+{% block title %}Order #{{ order.pk }}{% endblock %}
+{% block content %}
+<div class="breadcrumbs"><a href="{% url 'shop:orders' %}">My orders</a> / <span>Order #{{ order.pk }}</span></div>
+<div class="card order">
+  <div class="order-head">
+    <div><h1>Order #{{ order.pk }}</h1><span class="muted">Placed {{ order.placed_at|date:"F j, Y H:i" }}</span></div>
+    <span class="status status-{{ order.payment_status }}">{{ order.get_payment_status_display }}</span>
+  </div>
+  {% include 'shop/_order_table.html' %}
+</div>
+<a href="{% url 'shop:products' %}" class="btn">Continue shopping</a>
+{% endblock %}

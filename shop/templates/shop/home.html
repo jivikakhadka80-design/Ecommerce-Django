@@ -1,0 +1,49 @@
+{% extends 'shop/base.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<section class="hero">
+  <div>
+    <p class="eyebrow">New season · New arrivals</p>
+    <h1>Everything you need,<br>delivered to your door.</h1>
+    <p>Browse our latest products, add what you love to your cart and check out in a minute.</p>
+    <a class="btn btn-light" href="{% url 'shop:products' %}">Shop now</a>
+    <a class="btn btn-ghost" href="{% url 'shop:products' %}?sort=newest">See what's new</a>
+  </div>
+</section>
+
+<section class="perks">
+  <div><strong>🚚 Fast delivery</strong><span>Quick dispatch on every order</span></div>
+  <div><strong>🔒 Secure checkout</strong><span>Your account stays protected</span></div>
+  <div><strong>↩️ Easy returns</strong><span>30-day return window</span></div>
+  <div><strong>💬 Friendly support</strong><span>We're here to help</span></div>
+</section>
+
+{% if collections %}
+<section>
+  <div class="section-head"><h2>Shop by category</h2><a href="{% url 'shop:products' %}">View all →</a></div>
+  <div class="category-grid">
+    {% for c in collections %}
+    <a class="category-tile" href="{% url 'shop:products' %}?collection={{ c.id }}">
+      <strong>{{ c.title }}</strong>
+      <span>{{ c.products_count }} product{{ c.products_count|pluralize }}</span>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<section>
+  <div class="section-head"><h2>New arrivals</h2><a href="{% url 'shop:products' %}?sort=newest">View all →</a></div>
+  {% if new_arrivals %}
+    <div class="product-grid">
+      {% for product in new_arrivals %}{% include 'shop/_product_card.html' %}{% endfor %}
+    </div>
+  {% else %}
+    <div class="empty">
+      <h3>No products yet</h3>
+      <p>Add some in the <a href="/admin/">admin</a>, or load sample data with:</p>
+      <code>python manage.py seed_store</code>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

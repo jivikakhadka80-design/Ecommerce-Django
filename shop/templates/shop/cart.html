@@ -1,0 +1,52 @@
+{% extends 'shop/base.html' %}
+{% block title %}Your cart{% endblock %}
+{% block content %}
+<h1>Shopping cart</h1>
+{% if lines %}
+<div class="layout-cart">
+  <div class="card">
+    <table class="table">
+      <thead><tr><th>Product</th><th>Price</th><th>Quantity</th><th class="num">Total</th><th></th></tr></thead>
+      <tbody>
+      {% for item in lines %}
+        <tr>
+          <td><a href="{% url 'shop:product_detail' item.product.pk %}">{{ item.product.title }}</a></td>
+          <td>${{ item.product.unit_price|floatformat:2 }}</td>
+          <td>
+            <form method="post" action="{% url 'shop:update_item' %}" class="qty-form">
+              {% csrf_token %}
+              <input type="hidden" name="item_id" value="{{ item.pk }}">
+              <input type="number" name="quantity" value="{{ item.quantity }}" min="0" max="{{ item.product.inventory }}" aria-label="Quantity">
+              <button type="submit" class="btn btn-sm">Update</button>
+            </form>
+          </td>
+          <td class="num">${{ item.line_total|floatformat:2 }}</td>
+          <td>
+            <form method="post" action="{% url 'shop:remove_item' %}">
+              {% csrf_token %}
+              <input type="hidden" name="item_id" value="{{ item.pk }}">
+              <button type="submit" class="linklike danger" aria-label="Remove {{ item.product.title }}">Remove</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <aside class="card summary">
+    <h3>Order summary</h3>
+    <div class="summary-row"><span>Items</span><span>{{ count }}</span></div>
+    <div class="summary-row total"><span>Subtotal</span><span>${{ total|floatformat:2 }}</span></div>
+    <a href="{% url 'shop:checkout' %}" class="btn btn-block btn-lg">Proceed to checkout</a>
+    <a href="{% url 'shop:products' %}" class="btn btn-block btn-outline">Continue shopping</a>
+  </aside>
+</div>
+{% else %}
+<div class="empty">
+  <h3>Your cart is empty</h3>
+  <p>Looks like you haven't added anything yet.</p>
+  <a href="{% url 'shop:products' %}" class="btn">Start shopping</a>
+</div>
+{% endif %}
+{% endblock %}
